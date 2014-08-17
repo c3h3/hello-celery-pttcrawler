@@ -15,10 +15,11 @@ CELERY_MONGODB_BACKEND_HOST = os.environ.get('CELERY_MONGODB_BACKEND_HOST', 'loc
 CELERY_MONGODB_BACKEND_PORT = int(os.environ.get('CELERY_MONGODB_BACKEND_PORT', 27017))
 
 celery = Celery('ptt_crawler.celery',
-                broker=BROKER_URL,
+                # broker=BROKER_URL,
                 include=['ptt_crawler.tasks'])
 
 celery.conf.update(
+	BROKER_URL=BROKER_URL,
     CELERY_RESULT_BACKEND='mongodb',
     CELERY_MONGODB_BACKEND_SETTINGS={
         'host': CELERY_MONGODB_BACKEND_HOST,
