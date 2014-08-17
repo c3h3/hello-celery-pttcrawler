@@ -8,11 +8,24 @@ from __future__ import absolute_import
 
 from celery import Celery
 
+import os
+
+BROKER_URL = "mongodb://localhost:27017/ptt_crawler_broker"
+CELERY_MONGODB_BACKEND_HOST = os.environ.get('CELERY_MONGODB_BACKEND_HOST', 'localhost')
+CELERY_MONGODB_BACKEND_PORT = int(os.environ.get('CELERY_MONGODB_BACKEND_PORT', 27017))
+
 celery = Celery('ptt_crawler.celery',
-                #broker='amqp://',
-                broker="mongodb://localhost:27017/ptt_crawler_broker",
-                backend="mongodb://localhost:27017/ptt_crawler_backend",
+                broker=BROKER_URL,
                 include=['ptt_crawler.tasks'])
+
+celery.conf.update(
+    CELERY_RESULT_BACKEND='mongodb',
+    CELERY_MONGODB_BACKEND_SETTINGS={
+        'host': CELERY_MONGODB_BACKEND_HOST,
+        'port': CELERY_MONGODB_BACKEND_PORT,
+    }
+)
+
 
 
 
